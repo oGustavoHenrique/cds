@@ -30,6 +30,14 @@ if(isset($_POST['botao'])){
             $resultado = $db->manipular($sql);
             header("location: index.php");
         }
-    }else{
-    header("location: index.php");
-}?>
+    }else if($_POST['botao']=='Adicionar CD'){
+        $verifica = $db->consultar("SELECT * FROM cd WHERE titulo = '{$_POST['titulo']}'");
+        if($verifica){
+            echo ("Esta gravadora já está cadastrada."); die;
+        }else{
+            $sql = "insert into cd (titulo, ano, artista_idArtista, gravadora_idGravadora, estilo_idEstilo) values('{$_POST['titulo']}','{$_POST['ano']}','{$_POST['artista']}','{$_POST['gravadora']}','{$_POST['estilo']}')";
+            $resultado = $db->manipular($sql);
+            header("location: index.php");
+    }
+    
+}}?>
