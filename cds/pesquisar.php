@@ -1,4 +1,6 @@
-<?php include "DB.php"; 
+<?php
+
+require_once "DB.php";
 $db = new DB();
 ?>
 <!DOCTYPE html>
@@ -10,7 +12,7 @@ $db = new DB();
     <title>Sistema de Busca</title>
 </head>
 <body>
-    <h1>Lista de CDS</h1>
+    <h1>Lista de Veículos</h1>
     <form action="">
         <input name="busca" value="<?php if(isset($_GET['busca'])) echo $_GET['busca']; ?>" placeholder="Digite os termos de pesquisa" type="text">
         <button type="submit">Pesquisar</button>
@@ -34,35 +36,25 @@ $db = new DB();
         } else {
             $pesquisa = $_GET['busca'];
             $sql = "SELECT * 
-                FROM cd 
+                FROM cd, artista, gravadora, estilo 
                 WHERE titulo LIKE '%$pesquisa%' 
                 OR ano LIKE '%$pesquisa%'
-                OR artista_idArtista LIKE '%$pesquisa%'
-                OR gravadora_idGravadora LIKE '%$pesquisa%'
-                OR estilo_idEstilo LIKE '%$pesquisa%'";
-            $resultado = $db->consultar($sql);
-            if ($resultado->num_rows == 0) {
-                ?>
-            <tr>
-                <td colspan="3">Nenhum db encontrado...</td>
-            </tr>
-            <?php
-            } else {
-                while($dados = $resultado) {
+                OR artista.idArtista = artista_idArtista and artista.nome LIKE '%$pesquisa%'
+                OR gravadora.idGravadora = gravadora_idGravadora and gravadora.identificacao LIKE '%$pesquisa%'
+                OR estilo.idEstilo = estilo_idEstilo and estilo.identificacao LIKE '%$pesquisa%'";
+            $resultados = $db->consultar($sql);
+            foreach($resultados as $dados)
                     ?>
                     <tr>
                         <td><?php echo $dados['titulo']; ?></td>
                         <td><?php echo $dados['ano']; ?></td>
-                        <td><?php echo $dados['artista']; ?></td>
-                        <td><?php echo $dados['gravadora']; ?></td>
-                        <td><?php echo $dados['estilo']; ?></td>
+                        <td><?php echo $dados['artista_idArtista']; ?></td>
+                        <td><?php echo $dados['gravadora_idGravadora']; ?></td>
+                        <td><?php echo $dados['estilo_idEstilo']; ?></td>
                     </tr>
                     <?php
                 }
-            }
             ?>
-        <?php
-        } ?>
     </table>
 </body>
 </html>
